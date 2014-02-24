@@ -37,6 +37,8 @@ class BeliefstateClient {
   int startContext(string strContextName);
   void endContext(int nContextID, bool bSuccess);
   list<CDesignator*> alterContext(CDesignator* desigAlter);
+  
+  void exportFiles(string strFilename);
 };
 
 

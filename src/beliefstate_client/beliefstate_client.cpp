@@ -94,3 +94,7 @@ list<CDesignator*> BeliefstateClient::alterContext(CDesignator* desigAlter) {
   
   return this->callService(m_sclAlterContextService, desigAlter);
 }
+
+void BeliefstateClient::exportFiles(string strFilename) {
+  // Implement me.
+}
