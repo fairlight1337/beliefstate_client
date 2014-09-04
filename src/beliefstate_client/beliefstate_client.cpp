@@ -52,6 +52,7 @@ int BeliefstateClient::startContext(string strContextName) {
   desigRequest->setType(ACTION);
   desigRequest->setValue(string("_name"), strContextName);
   desigRequest->setValue(string("_source"), m_strSource);
+  desigRequest->setValue(string("_detail-level"), 1);
   
   list<CDesignator*> lstDesigs = this->callService(m_sclBeginContextService,
 						   desigRequest);
@@ -105,6 +106,9 @@ void BeliefstateClient::exportFiles(string strFilename) {
   desigRequest->setValue(string("command"), "export-planlog");
   desigRequest->setValue(string("format"), "owl");
   desigRequest->setValue(string("filename"), strFilename + ".owl");
+  desigRequest->setValue(string("show-successes"), 1);
+  desigRequest->setValue(string("show-fails"), 1);
+  desigRequest->setValue(string("max-detail-level"), 99);
   
   this->callService(m_sclAlterContextService, desigRequest);
   
