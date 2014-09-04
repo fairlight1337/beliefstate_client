@@ -55,6 +55,7 @@ int BeliefstateClient::startContext(string strContextName) {
   
   list<CDesignator*> lstDesigs = this->callService(m_sclBeginContextService,
 						   desigRequest);
+  delete desigRequest;
   
   int nID = -1;
   if(lstDesigs.size() == 1) {
@@ -87,6 +88,8 @@ void BeliefstateClient::endContext(int nContextID, bool bSuccess) {
       itDesig++) {
     delete *itDesig;
   }
+
+  delete desigRequest;
 }
 
 list<CDesignator*> BeliefstateClient::alterContext(CDesignator* desigAlter) {
@@ -96,5 +99,19 @@ list<CDesignator*> BeliefstateClient::alterContext(CDesignator* desigAlter) {
 }
 
 void BeliefstateClient::exportFiles(string strFilename) {
-  // Implement me.
+  CDesignator* desigRequest = new CDesignator();
+  desigRequest->setType(ACTION);
+  
+  desigRequest->setValue(string("command"), "export-planlog");
+  desigRequest->setValue(string("format"), "owl");
+  desigRequest->setValue(string("filename"), strFilename + ".owl");
+  
+  this->callService(m_sclAlterContextService, desigRequest);
+  
+  desigRequest->setValue(string("format"), "dot");
+  desigRequest->setValue(string("filename"), strFilename + ".dot");
+  
+  this->callService(m_sclAlterContextService, desigRequest);
+  
+  delete desigRequest;
 }

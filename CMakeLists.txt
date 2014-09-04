@@ -87,7 +87,7 @@ target_link_libraries(beliefstate_client_node
 
 target_link_libraries(beliefstate_client
   ${catkin_LIBRARIES}
-  DesignatorIntegration
+  designator_integration
 )
 
 #############
