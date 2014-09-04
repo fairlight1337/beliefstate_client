@@ -34,8 +34,8 @@ class BeliefstateClient {
   
   list<CDesignator*> callService(ros::ServiceClient sclServiceClient, CDesignator* desigContent);
   
-  int startContext(string strContextName);
-  void endContext(int nContextID, bool bSuccess = true);
+  int startContext(string strContextName, int nTimeStamp = -1);
+  void endContext(int nContextID, bool bSuccess = true, int nTimeStamp = -1);
   list<CDesignator*> alterContext(CDesignator* desigAlter);
   
   void exportFiles(string strFilename);

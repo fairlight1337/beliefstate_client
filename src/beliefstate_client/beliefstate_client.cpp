@@ -47,12 +47,16 @@ string BeliefstateClient::source() {
   return m_strSource;
 }
 
-int BeliefstateClient::startContext(string strContextName) {
+int BeliefstateClient::startContext(string strContextName, int nTimeStamp) {
   CDesignator* desigRequest = new CDesignator();
   desigRequest->setType(ACTION);
   desigRequest->setValue(string("_name"), strContextName);
   desigRequest->setValue(string("_source"), m_strSource);
   desigRequest->setValue(string("_detail-level"), 1);
+  
+  if(nTimeStamp > -1) {
+    desigRequest->setValue("time-start", nTimeStamp);
+  }
   
   list<CDesignator*> lstDesigs = this->callService(m_sclBeginContextService,
 						   desigRequest);
@@ -73,7 +77,7 @@ int BeliefstateClient::startContext(string strContextName) {
   return nID;
 }
 
-void BeliefstateClient::endContext(int nContextID, bool bSuccess) {
+void BeliefstateClient::endContext(int nContextID, bool bSuccess, int nTimeStamp) {
   CDesignator* desigRequest = new CDesignator();
   desigRequest->setType(ACTION);
   
@@ -81,6 +85,10 @@ void BeliefstateClient::endContext(int nContextID, bool bSuccess) {
   desigRequest->setValue(string("_success"), (bSuccess ? 1 : 0));
   desigRequest->setValue(string("_source"), m_strSource);
   
+  if(nTimeStamp > -1) {
+    desigRequest->setValue("time-end", nTimeStamp);
+  }
+  desigRequest->printDesignator();
   list<CDesignator*> lstDesigs = this->callService(m_sclEndContextService,
 						   desigRequest);
   
