@@ -101,9 +101,11 @@ class BeliefstateClient {
   std::list<CDesignator*> callService(ros::ServiceClient sclServiceClient, CDesignator* desigContent);
   
   int startContext(std::string strContextName, int nTimeStamp = -1);
-  int startContext(std::string strContextName, std::string strClassNameSpace = "", std::string strClass = "", int nTimeStamp = -1);
+  int startContext(std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
   void endContext(int nContextID, bool bSuccess = true, int nTimeStamp = -1);
   list<CDesignator*> alterContext(CDesignator* desigAlter);
+  
+  void discreteEvent(std::string strEventName, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, int nTimeStamp = -1);
   
   void exportFiles(std::string strFilename);
 };

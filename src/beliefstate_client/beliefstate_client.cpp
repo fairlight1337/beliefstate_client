@@ -156,6 +156,11 @@ std::list<CDesignator*> BeliefstateClient::alterContext(CDesignator* desigAlter)
   return this->callService(m_sclAlterContextService, desigAlter);
 }
 
+void BeliefstateClient::discreteEvent(std::string strEventName, std::string strClassNamespace, std::string strClass, bool bSuccess, int nTimeStamp) {
+  int nCtxID = this->startContext(strEventName, strClassNamespace, strClass, nTimeStamp);
+  this->endContext(nCtxID, bSuccess, nTimeStamp);
+}
+
 void BeliefstateClient::exportFiles(std::string strFilename) {
   CDesignator* desigRequest = new CDesignator();
   desigRequest->setType(ACTION);
