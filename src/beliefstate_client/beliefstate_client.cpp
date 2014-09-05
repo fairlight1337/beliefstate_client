@@ -161,6 +161,62 @@ void BeliefstateClient::discreteEvent(std::string strEventName, std::string strC
   this->endContext(nCtxID, bSuccess, nTimeStamp);
 }
 
+void BeliefstateClient::addDesignator(CDesignator* cdAdd, std::string strAnnotation) {
+  std::string strDesigType = "";
+  
+  switch(cdAdd->type()) {
+  case OBJECT: {
+    strDesigType = "OBJECT";
+  } break;
+    
+  case LOCATION: {
+    strDesigType = "LOCATION";
+  } break;
+    
+  default:
+  case ACTION: {
+    strDesigType = "ACTION";
+  } break;
+  }
+  
+  std::stringstream sts;
+  long lAddress = (long)cdAdd;
+  sts << lAddress;
+  
+  CDesignator* cdSend = new CDesignator(ACTION);
+  cdSend->addChild("description", LIST, cdAdd->children());
+  cdSend->setValue("command", "add-designator");
+  cdSend->setValue("type", strDesigType);
+  cdSend->setValue("annotation", strAnnotation);
+  cdSend->setValue("memory-address", sts.str());
+  
+  std::list<CDesignator*> lstResultDesignators = this->alterContext(cdSend);
+  
+  for(CDesignator* cdDelete : lstResultDesignators) {
+    delete cdDelete;
+  }
+  
+  delete cdSend;
+}
+
+void BeliefstateClient::annotateParameter(std::string strKey, std::string strValue) {
+  CDesignator* cdAnnotate = new CDesignator(OBJECT);
+  cdAnnotate->setValue(strKey, strValue);
+  
+  this->addDesignator(cdAnnotate, "parameter-annotation");
+  
+  delete cdAnnotate;
+}
+
+void BeliefstateClient::annotateParameter(std::string strKey, float fValue) {
+  CDesignator* cdAnnotate = new CDesignator(OBJECT);
+  cdAnnotate->setValue(strKey, fValue);
+  
+  this->addDesignator(cdAnnotate, "parameter-annotation");
+  
+  delete cdAnnotate;
+}
+
 void BeliefstateClient::exportFiles(std::string strFilename) {
   CDesignator* desigRequest = new CDesignator();
   desigRequest->setType(ACTION);
@@ -172,12 +228,12 @@ void BeliefstateClient::exportFiles(std::string strFilename) {
   desigRequest->setValue(std::string("show-fails"), 1);
   desigRequest->setValue(std::string("max-detail-level"), 99);
   
-  this->callService(m_sclAlterContextService, desigRequest);
+  this->alterContext(desigRequest);
   
   desigRequest->setValue(std::string("format"), "dot");
   desigRequest->setValue(std::string("filename"), strFilename + ".dot");
   
-  this->callService(m_sclAlterContextService, desigRequest);
+  this->alterContext(desigRequest);
   
   delete desigRequest;
 }

@@ -107,6 +107,10 @@ class BeliefstateClient {
   
   void discreteEvent(std::string strEventName, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, int nTimeStamp = -1);
   
+  void addDesignator(CDesignator* cdAdd, std::string strAnnotation = "");
+  void annotateParameter(std::string strKey, std::string strValue);
+  void annotateParameter(std::string strKey, float fValue);
+  
   void exportFiles(std::string strFilename);
 };
 
