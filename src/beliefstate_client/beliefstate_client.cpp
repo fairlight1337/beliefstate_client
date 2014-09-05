@@ -91,11 +91,23 @@ std::string BeliefstateClient::source() {
 }
 
 int BeliefstateClient::startContext(std::string strContextName, int nTimeStamp) {
+  return this->startContext(strContextName, "", "", nTimeStamp);
+}
+
+int BeliefstateClient::startContext(std::string strContextName, std::string strClassNamespace, std::string strClass, int nTimeStamp) {
   CDesignator* desigRequest = new CDesignator();
   desigRequest->setType(ACTION);
   desigRequest->setValue(string("_name"), strContextName);
   desigRequest->setValue(string("_source"), m_strSource);
   desigRequest->setValue(string("_detail-level"), 1);
+  
+  if(strClass != "") {
+    desigRequest->setValue(string("_class"), strClass);
+    
+    if(strClassNamespace != "") {
+      desigRequest->setValue(string("_classnamespace"), strClassNamespace);
+    }
+  }
   
   if(nTimeStamp > -1) {
     desigRequest->setValue("time-start", nTimeStamp);
@@ -128,7 +140,7 @@ void BeliefstateClient::endContext(int nContextID, bool bSuccess, int nTimeStamp
   if(nTimeStamp > -1) {
     desigRequest->setValue("time-end", nTimeStamp);
   }
-  desigRequest->printDesignator();
+  
   list<CDesignator*> lstDesigs = this->callService(m_sclEndContextService, desigRequest);
   
   for(CDesignator* cdDesig : lstDesigs) {
