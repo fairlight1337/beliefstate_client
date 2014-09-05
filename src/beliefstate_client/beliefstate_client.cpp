@@ -110,7 +110,7 @@ int BeliefstateClient::startContext(std::string strContextName, std::string strC
   }
   
   if(nTimeStamp > -1) {
-    desigRequest->setValue("time-start", nTimeStamp);
+    desigRequest->setValue("_time-start", nTimeStamp);
   }
   
   std::list<CDesignator*> lstDesigs = this->callService(m_sclBeginContextService, desigRequest);
@@ -138,7 +138,7 @@ void BeliefstateClient::endContext(int nContextID, bool bSuccess, int nTimeStamp
   desigRequest->setValue(string("_source"), m_strSource);
   
   if(nTimeStamp > -1) {
-    desigRequest->setValue("time-end", nTimeStamp);
+    desigRequest->setValue("_time-end", nTimeStamp);
   }
   
   list<CDesignator*> lstDesigs = this->callService(m_sclEndContextService, desigRequest);
