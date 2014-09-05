@@ -55,13 +55,11 @@ void BeliefstateClient::init(int argc, char** argv, std::string strSource) {
   m_strServer = "/beliefstate_ros";
   this->setSource(strSource);
   
-  if(!ros::ok() && argc > 0 && argv) {
+  if(!ros::isInitialized() && argc > 0 && argv) {
     ros::init(argc, argv, strSource);
-    m_nhHandle = new ros::NodeHandle("~");
-  } else {
-    ros::NodeHandle nhHandle("~");
-    m_nhHandle = &nhHandle;
   }
+  
+  m_nhHandle = new ros::NodeHandle("~");
   
   m_sclBeginContextService = m_nhHandle->serviceClient<designator_integration_msgs::DesignatorCommunication>(m_strServer + "/begin_context");
   m_sclEndContextService = m_nhHandle->serviceClient<designator_integration_msgs::DesignatorCommunication>(m_strServer + "/end_context");
