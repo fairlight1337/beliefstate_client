@@ -55,7 +55,7 @@ void BeliefstateClient::init(int argc, char** argv, std::string strSource) {
   m_strServer = "/beliefstate_ros";
   this->setSource(strSource);
   
-  if(!ros::isInitialized() && argc > 0 && argv) {
+  if(!ros::isInitialized()) {
     ros::init(argc, argv, strSource);
   }
   
