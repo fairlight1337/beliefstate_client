@@ -47,19 +47,27 @@
 // Designators
 #include <designators/CDesignator.h>
 
+// Private
+#include <beliefstate_client/BeliefstateClient.h>
+
 
 namespace beliefstate_client {
   class Context : public CDesignator {
   private:
     int m_nContextID;
+    BeliefstateClient* m_bsclClient;
     
   protected:
+    void setID(int nContextID);
+    
   public:
-    Context(int nContextID);
+    Context(BeliefstateClient* bsclClient, std::string strContextName, int nTimeStamp = -1);
+    Context(BeliefstateClient* bsclClient, std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
     ~Context();
     
-    void setID(int nContextID);
     int id();
+    
+    void end(bool bSuccess = true, int nTimeStamp = -1);
   };
 }
 

@@ -91,11 +91,11 @@ namespace beliefstate_client {
     return m_strSource;
   }
   
-  Context* BeliefstateClient::startContext(std::string strContextName, int nTimeStamp) {
+  int BeliefstateClient::startContext(std::string strContextName, int nTimeStamp) {
     return this->startContext(strContextName, "", "", nTimeStamp);
   }
 
-  Context* BeliefstateClient::startContext(std::string strContextName, std::string strClassNamespace, std::string strClass, int nTimeStamp) {
+  int BeliefstateClient::startContext(std::string strContextName, std::string strClassNamespace, std::string strClass, int nTimeStamp) {
     CDesignator* desigRequest = new CDesignator();
     desigRequest->setType(ACTION);
     
@@ -129,15 +129,15 @@ namespace beliefstate_client {
       delete cdDesig;
     }
     
-    return new Context(nID);
+    return nID;
   }
 
-  void BeliefstateClient::endContext(Context* ctxEnd, bool bSuccess, int nTimeStamp) {
+  void BeliefstateClient::endContext(int nID, bool bSuccess, int nTimeStamp) {
     CDesignator* desigRequest = new CDesignator();
     desigRequest->setType(ACTION);
     
     desigRequest->setValue(string("_cb_type"), "end");
-    desigRequest->setValue(string("_id"), ctxEnd->id());
+    desigRequest->setValue(string("_id"), nID);
     desigRequest->setValue(string("_success"), (bSuccess ? 1 : 0));
     desigRequest->setValue(string("_source"), m_strSource);
     
@@ -152,7 +152,6 @@ namespace beliefstate_client {
     }
     
     delete desigRequest;
-    delete ctxEnd;
   }
 
   std::list<CDesignator*> BeliefstateClient::alterContext(CDesignator* desigRequest) {
@@ -164,8 +163,8 @@ namespace beliefstate_client {
   }
   
   void BeliefstateClient::discreteEvent(std::string strEventName, std::string strClassNamespace, std::string strClass, bool bSuccess, int nTimeStamp) {
-    Context* ctxTemp = this->startContext(strEventName, strClassNamespace, strClass, nTimeStamp);
-    this->endContext(ctxTemp, bSuccess, nTimeStamp);
+    int nID = this->startContext(strEventName, strClassNamespace, strClass, nTimeStamp);
+    this->endContext(nID, bSuccess, nTimeStamp);
   }
 
   void BeliefstateClient::addDesignator(CDesignator* cdAdd, std::string strAnnotation) {

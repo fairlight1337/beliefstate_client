@@ -54,7 +54,6 @@
 
 // Private
 #include <beliefstate_client/Object.h>
-#include <beliefstate_client/Context.h>
 
 
 namespace beliefstate_client {
@@ -102,9 +101,9 @@ namespace beliefstate_client {
     
     std::list<CDesignator*> callService(CDesignator* desigContent);
     
-    Context* startContext(std::string strContextName, int nTimeStamp = -1);
-    Context* startContext(std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
-    void endContext(Context* ctxEnd, bool bSuccess = true, int nTimeStamp = -1);
+    int startContext(std::string strContextName, int nTimeStamp = -1);
+    int startContext(std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
+    void endContext(int nID, bool bSuccess = true, int nTimeStamp = -1);
     list<CDesignator*> alterContext(CDesignator* desigAlter);
     
     void discreteEvent(std::string strEventName, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, int nTimeStamp = -1);

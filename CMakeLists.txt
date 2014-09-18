@@ -23,6 +23,7 @@ include_directories(
 add_library(beliefstate_client
   src/beliefstate_client/BeliefstateClient.cpp
   src/beliefstate_client/Object.cpp
+  src/beliefstate_client/Context.cpp
 )
 
 target_link_libraries(beliefstate_client
