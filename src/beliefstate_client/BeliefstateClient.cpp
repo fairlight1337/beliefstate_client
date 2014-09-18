@@ -69,7 +69,11 @@ namespace beliefstate_client {
     m_sclService = m_nhHandle->serviceClient<designator_integration_msgs::DesignatorCommunication>(m_strServer + "/operate");
   }
   
-  std::list<CDesignator*> BeliefstateClient::callService(CDesignator* desigContent) {
+  std::list<CDesignator*> BeliefstateClient::callService(CDesignator* desigContent, int nRelativeContextID) {
+    if(nRelativeContextID > -1) {
+      desigContent->setValue(string("_relative_context_id"), nRelativeContextID);
+    }
+    
     designator_integration_msgs::DesignatorCommunication dcComm;
     dcComm.request.request.designator = desigContent->serializeToMessage();
     
@@ -91,11 +95,11 @@ namespace beliefstate_client {
     return m_strSource;
   }
   
-  int BeliefstateClient::startContext(std::string strContextName, int nTimeStamp) {
-    return this->startContext(strContextName, "", "", nTimeStamp);
+  int BeliefstateClient::startContext(std::string strContextName, int nRelativeToID, int nTimeStamp) {
+    return this->startContext(strContextName, nRelativeToID, "", "", nTimeStamp);
   }
 
-  int BeliefstateClient::startContext(std::string strContextName, std::string strClassNamespace, std::string strClass, int nTimeStamp) {
+  int BeliefstateClient::startContext(std::string strContextName, int nRelativeToID, std::string strClassNamespace, std::string strClass, int nTimeStamp) {
     CDesignator* desigRequest = new CDesignator();
     desigRequest->setType(ACTION);
     
@@ -116,7 +120,7 @@ namespace beliefstate_client {
       desigRequest->setValue("_time-start", nTimeStamp);
     }
     
-    std::list<CDesignator*> lstDesigs = this->callService(desigRequest);
+    std::list<CDesignator*> lstDesigs = this->callService(desigRequest, nRelativeToID);
     delete desigRequest;
     
     int nID = -1;
@@ -154,22 +158,22 @@ namespace beliefstate_client {
     delete desigRequest;
   }
 
-  std::list<CDesignator*> BeliefstateClient::alterContext(CDesignator* desigRequest) {
+  std::list<CDesignator*> BeliefstateClient::alterContext(CDesignator* desigRequest, int nContextID) {
     desigRequest->setValue(string("_cb_type"), "alter");
     desigRequest->setValue(string("_type"), "alter");
     desigRequest->setValue(string("_source"), m_strSource);
     
-    return this->callService(desigRequest);
+    return this->callService(desigRequest, nContextID);
   }
   
-  void BeliefstateClient::discreteEvent(std::string strEventName, std::string strClassNamespace, std::string strClass, bool bSuccess, int nTimeStamp) {
-    int nID = this->startContext(strEventName, strClassNamespace, strClass, nTimeStamp);
+  void BeliefstateClient::discreteEvent(std::string strEventName, int nToID, std::string strClassNamespace, std::string strClass, bool bSuccess, int nTimeStamp) {
+    int nID = this->startContext(strEventName, nToID, strClassNamespace, strClass, nTimeStamp);
     this->endContext(nID, bSuccess, nTimeStamp);
   }
-
-  void BeliefstateClient::addDesignator(CDesignator* cdAdd, std::string strAnnotation) {
-    std::string strDesigType = "";
   
+  void BeliefstateClient::addDesignator(CDesignator* cdAdd, std::string strAnnotation, int nToID) {
+    std::string strDesigType = "";
+    
     switch(cdAdd->type()) {
     case OBJECT: {
       strDesigType = "OBJECT";
@@ -184,7 +188,7 @@ namespace beliefstate_client {
       strDesigType = "ACTION";
     } break;
     }
-  
+    
     std::stringstream sts;
     long lAddress = (long)cdAdd;
     sts << lAddress;
@@ -195,30 +199,30 @@ namespace beliefstate_client {
     cdSend->setValue("type", strDesigType);
     cdSend->setValue("annotation", strAnnotation);
     cdSend->setValue("memory-address", sts.str());
-  
-    std::list<CDesignator*> lstResultDesignators = this->alterContext(cdSend);
-  
+    
+    std::list<CDesignator*> lstResultDesignators = this->alterContext(cdSend, nToID);
+    
     for(CDesignator* cdDelete : lstResultDesignators) {
       delete cdDelete;
     }
-  
+    
     delete cdSend;
   }
-
-  void BeliefstateClient::annotateParameter(std::string strKey, std::string strValue) {
+  
+  void BeliefstateClient::annotateParameter(std::string strKey, std::string strValue, int nToID) {
     CDesignator* cdAnnotate = new CDesignator(OBJECT);
     cdAnnotate->setValue(strKey, strValue);
-  
-    this->addDesignator(cdAnnotate, "parameter-annotation");
-  
+    
+    this->addDesignator(cdAnnotate, "parameter-annotation", nToID);
+    
     delete cdAnnotate;
   }
 
-  void BeliefstateClient::annotateParameter(std::string strKey, float fValue) {
+  void BeliefstateClient::annotateParameter(std::string strKey, float fValue, int nToID) {
     CDesignator* cdAnnotate = new CDesignator(OBJECT);
     cdAnnotate->setValue(strKey, fValue);
   
-    this->addDesignator(cdAnnotate, "parameter-annotation");
+    this->addDesignator(cdAnnotate, "parameter-annotation", nToID);
   
     delete cdAnnotate;
   }
@@ -244,7 +248,7 @@ namespace beliefstate_client {
     delete desigRequest;
   }
   
-  void BeliefstateClient::addObject(Object* objAdd, std::string strProperty) {
+  void BeliefstateClient::addObject(Object* objAdd, std::string strProperty, int nToID) {
     std::stringstream sts;
     long lAddress = (long)objAdd;
     sts << lAddress;
@@ -267,7 +271,7 @@ namespace beliefstate_client {
       cdSend->setValue("classnamespace", objAdd->classNamespace());
     }
     
-    std::list<CDesignator*> lstResultDesignators = this->alterContext(cdSend);
+    std::list<CDesignator*> lstResultDesignators = this->alterContext(cdSend, nToID);
     
     for(CDesignator* cdDelete : lstResultDesignators) {
       delete cdDelete;

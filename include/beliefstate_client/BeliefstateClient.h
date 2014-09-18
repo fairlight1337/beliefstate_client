@@ -99,19 +99,19 @@ namespace beliefstate_client {
     void setSource(std::string strSource);
     std::string source();
     
-    std::list<CDesignator*> callService(CDesignator* desigContent);
+    std::list<CDesignator*> callService(CDesignator* desigContent, int nRelativeContextID = -1);
     
-    int startContext(std::string strContextName, int nTimeStamp = -1);
-    int startContext(std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
+    int startContext(std::string strContextName, int nRelativeToID = -1, int nTimeStamp = -1);
+    int startContext(std::string strContextName, int nRelativeToID = -1, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
     void endContext(int nID, bool bSuccess = true, int nTimeStamp = -1);
-    list<CDesignator*> alterContext(CDesignator* desigAlter);
+    list<CDesignator*> alterContext(CDesignator* desigAlter, int nContextID = -1);
     
-    void discreteEvent(std::string strEventName, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, int nTimeStamp = -1);
-    void addObject(Object* objAdd, std::string strProperty = "");
+    void discreteEvent(std::string strEventName, int nToID = -1, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, int nTimeStamp = -1);
+    void addObject(Object* objAdd, std::string strProperty = "", int nToID = -1);
     
-    void addDesignator(CDesignator* cdAdd, std::string strAnnotation = "");
-    void annotateParameter(std::string strKey, std::string strValue);
-    void annotateParameter(std::string strKey, float fValue);
+    void addDesignator(CDesignator* cdAdd, std::string strAnnotation = "", int nToID = -1);
+    void annotateParameter(std::string strKey, std::string strValue, int nToID = -1);
+    void annotateParameter(std::string strKey, float fValue, int nToID = -1);
     
     void exportFiles(std::string strFilename);
   };
