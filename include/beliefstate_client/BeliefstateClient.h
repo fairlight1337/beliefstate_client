@@ -54,6 +54,7 @@
 
 // Private
 #include <beliefstate_client/Object.h>
+#include <beliefstate_client/Context.h>
 
 
 namespace beliefstate_client {
@@ -63,47 +64,47 @@ namespace beliefstate_client {
     /*! \brief The current instance's ROS node handle */
     ros::NodeHandle* m_nhHandle;
     /*! \brief Name string for identifying this client in the logging system
-   
+      
       This defaults to the client's ROS node name if not specified manually. */
     std::string m_strSource;
     /*! \brief The ROS node name of the beliefstate node to talk to
-    
+      
       This defaults to '/beliefstate_ros'. */
     std::string m_strServer;
     /*! \brief ROS service for communication with the beliefstate
         software */
     ros::ServiceClient m_sclService;
-  
+    
   public:
     /*! \brief Constructor not opening a new ROS node
-   
+      
       This constructor relies on an already existing ROS node within the
       linked program in which this class is used.
-  
+      
       \param strSource Identifier string for identification at the logging server node */
     BeliefstateClient(std::string strSource = "");
     /*! \brief Constructor opening a new ROS node
-    
+      
       This constructor starts a new ROS node for this instance. If a ROS
       node instance is already present, no new instance is started.
-  
+      
       \param argc The argc parameter as passed to the main() function
       \param argc The argv parameter as passed to the main() function
       \param strSource Identifier string for identification at the logging server node */
     BeliefstateClient(int argc, char** argv, std::string strSource = "");
     /*! \brief Destructor for the adapter class */
     ~BeliefstateClient();
-  
+    
     void init(int argc, char** argv, std::string strSource, std::string strServer = "");
-
+    
     void setSource(std::string strSource);
     std::string source();
-  
+    
     std::list<CDesignator*> callService(CDesignator* desigContent);
-  
-    int startContext(std::string strContextName, int nTimeStamp = -1);
-    int startContext(std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
-    void endContext(int nContextID, bool bSuccess = true, int nTimeStamp = -1);
+    
+    Context* startContext(std::string strContextName, int nTimeStamp = -1);
+    Context* startContext(std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
+    void endContext(Context* ctxEnd, bool bSuccess = true, int nTimeStamp = -1);
     list<CDesignator*> alterContext(CDesignator* desigAlter);
     
     void discreteEvent(std::string strEventName, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, int nTimeStamp = -1);
