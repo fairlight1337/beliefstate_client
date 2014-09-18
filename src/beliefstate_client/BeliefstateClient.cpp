@@ -52,43 +52,45 @@ namespace beliefstate_client {
   BeliefstateClient::~BeliefstateClient() {
   }
 
-  void BeliefstateClient::init(int argc, char** argv, std::string strSource) {
-    m_strServer = "/beliefstate_ros";
+  void BeliefstateClient::init(int argc, char** argv, std::string strSource, std::string strServer) {
+    if(strServer == "") {
+      strServer = "/beliefstate_ros";
+    }
+    
+    m_strServer = strServer;
     this->setSource(strSource);
-  
+    
     if(!ros::isInitialized()) {
       ros::init(argc, argv, strSource);
     }
-  
+    
     m_nhHandle = new ros::NodeHandle("~");
-  
-    m_sclBeginContextService = m_nhHandle->serviceClient<designator_integration_msgs::DesignatorCommunication>(m_strServer + "/begin_context");
-    m_sclEndContextService = m_nhHandle->serviceClient<designator_integration_msgs::DesignatorCommunication>(m_strServer + "/end_context");
-    m_sclAlterContextService = m_nhHandle->serviceClient<designator_integration_msgs::DesignatorCommunication>(m_strServer + "/alter_context");
+    
+    m_sclService = m_nhHandle->serviceClient<designator_integration_msgs::DesignatorCommunication>(m_strServer + "/operate");
   }
-
-  std::list<CDesignator*> BeliefstateClient::callService(ros::ServiceClient sclServiceClient, CDesignator* desigContent) {
+  
+  std::list<CDesignator*> BeliefstateClient::callService(CDesignator* desigContent) {
     designator_integration_msgs::DesignatorCommunication dcComm;
     dcComm.request.request.designator = desigContent->serializeToMessage();
-  
+    
     std::list<CDesignator*> lstReturnDesigs;
-    if(sclServiceClient.call(dcComm)) {
+    if(m_sclService.call(dcComm)) {
       for(designator_integration_msgs::Designator msgDesig : dcComm.response.response.designators) {
 	lstReturnDesigs.push_back(new CDesignator(msgDesig));
       }
     }
-  
+    
     return lstReturnDesigs;
   }
 
   void BeliefstateClient::setSource(std::string strSource) {
     m_strSource = strSource;
   }
-
+  
   std::string BeliefstateClient::source() {
     return m_strSource;
   }
-
+  
   int BeliefstateClient::startContext(std::string strContextName, int nTimeStamp) {
     return this->startContext(strContextName, "", "", nTimeStamp);
   }
@@ -96,10 +98,12 @@ namespace beliefstate_client {
   int BeliefstateClient::startContext(std::string strContextName, std::string strClassNamespace, std::string strClass, int nTimeStamp) {
     CDesignator* desigRequest = new CDesignator();
     desigRequest->setType(ACTION);
+    
+    desigRequest->setValue(string("_cb_type"), "begin");
     desigRequest->setValue(string("_name"), strContextName);
     desigRequest->setValue(string("_source"), m_strSource);
     desigRequest->setValue(string("_detail-level"), 1);
-  
+    
     if(strClass != "") {
       desigRequest->setValue(string("_class"), strClass);
     
@@ -112,7 +116,7 @@ namespace beliefstate_client {
       desigRequest->setValue("_time-start", nTimeStamp);
     }
   
-    std::list<CDesignator*> lstDesigs = this->callService(m_sclBeginContextService, desigRequest);
+    std::list<CDesignator*> lstDesigs = this->callService(desigRequest);
     delete desigRequest;
   
     int nID = -1;
@@ -131,30 +135,33 @@ namespace beliefstate_client {
   void BeliefstateClient::endContext(int nContextID, bool bSuccess, int nTimeStamp) {
     CDesignator* desigRequest = new CDesignator();
     desigRequest->setType(ACTION);
-  
+    
+    desigRequest->setValue(string("_cb_type"), "end");
     desigRequest->setValue(string("_id"), nContextID);
     desigRequest->setValue(string("_success"), (bSuccess ? 1 : 0));
     desigRequest->setValue(string("_source"), m_strSource);
-  
+    
     if(nTimeStamp > -1) {
       desigRequest->setValue("_time-end", nTimeStamp);
     }
-  
-    list<CDesignator*> lstDesigs = this->callService(m_sclEndContextService, desigRequest);
-  
+    
+    list<CDesignator*> lstDesigs = this->callService(desigRequest);
+    
     for(CDesignator* cdDesig : lstDesigs) {
       delete cdDesig;
     }
-  
+    
     delete desigRequest;
   }
 
-  std::list<CDesignator*> BeliefstateClient::alterContext(CDesignator* desigAlter) {
-    desigAlter->setValue(string("_source"), m_strSource);
-  
-    return this->callService(m_sclAlterContextService, desigAlter);
+  std::list<CDesignator*> BeliefstateClient::alterContext(CDesignator* desigRequest) {
+    desigRequest->setValue(string("_cb_type"), "alter");
+    desigRequest->setValue(string("_type"), "alter");
+    desigRequest->setValue(string("_source"), m_strSource);
+    
+    return this->callService(desigRequest);
   }
-
+  
   void BeliefstateClient::discreteEvent(std::string strEventName, std::string strClassNamespace, std::string strClass, bool bSuccess, int nTimeStamp) {
     int nCtxID = this->startContext(strEventName, strClassNamespace, strClass, nTimeStamp);
     this->endContext(nCtxID, bSuccess, nTimeStamp);
@@ -215,11 +222,11 @@ namespace beliefstate_client {
   
     delete cdAnnotate;
   }
-
+  
   void BeliefstateClient::exportFiles(std::string strFilename) {
     CDesignator* desigRequest = new CDesignator();
     desigRequest->setType(ACTION);
-  
+    
     desigRequest->setValue(std::string("command"), "export-planlog");
     desigRequest->setValue(std::string("format"), "owl");
     desigRequest->setValue(std::string("filename"), strFilename + ".owl");

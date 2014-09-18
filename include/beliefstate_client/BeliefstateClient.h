@@ -70,12 +70,9 @@ namespace beliefstate_client {
     
       This defaults to '/beliefstate_ros'. */
     std::string m_strServer;
-    /*! \brief ROS service handle for starting log contexts */
-    ros::ServiceClient m_sclBeginContextService;
-    /*! \brief ROS service handle for ending log contexts */
-    ros::ServiceClient m_sclEndContextService;
-    /*! \brief ROS service handle for altering log contexts */
-    ros::ServiceClient m_sclAlterContextService;
+    /*! \brief ROS service for communication with the beliefstate
+        software */
+    ros::ServiceClient m_sclService;
   
   public:
     /*! \brief Constructor not opening a new ROS node
@@ -97,25 +94,25 @@ namespace beliefstate_client {
     /*! \brief Destructor for the adapter class */
     ~BeliefstateClient();
   
-    void init(int argc, char** argv, std::string strSource);
+    void init(int argc, char** argv, std::string strSource, std::string strServer = "");
 
     void setSource(std::string strSource);
     std::string source();
   
-    std::list<CDesignator*> callService(ros::ServiceClient sclServiceClient, CDesignator* desigContent);
+    std::list<CDesignator*> callService(CDesignator* desigContent);
   
     int startContext(std::string strContextName, int nTimeStamp = -1);
     int startContext(std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
     void endContext(int nContextID, bool bSuccess = true, int nTimeStamp = -1);
     list<CDesignator*> alterContext(CDesignator* desigAlter);
-  
+    
     void discreteEvent(std::string strEventName, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, int nTimeStamp = -1);
     void addObject(Object* objAdd, std::string strProperty = "");
     
     void addDesignator(CDesignator* cdAdd, std::string strAnnotation = "");
     void annotateParameter(std::string strKey, std::string strValue);
     void annotateParameter(std::string strKey, float fValue);
-  
+    
     void exportFiles(std::string strFilename);
   };
 }
