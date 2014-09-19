@@ -106,7 +106,7 @@ namespace beliefstate_client {
     void endContext(int nID, bool bSuccess = true, int nTimeStamp = -1, bool bIsRelativeContextID = false);
     list<CDesignator*> alterContext(CDesignator* desigAlter, int nContextID = -1);
     
-    void discreteEvent(std::string strEventName, int nToID = -1, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, int nTimeStamp = -1);
+    void discreteEvent(std::string strEventName, int nToID = -1, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, int nTimeStamp = -1, bool bIsRelativeContextID = false);
     void addObject(Object* objAdd, std::string strProperty = "", int nToID = -1);
     
     void addDesignator(CDesignator* cdAdd, std::string strAnnotation = "", int nToID = -1);

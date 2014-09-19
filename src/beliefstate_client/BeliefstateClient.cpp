@@ -171,9 +171,9 @@ namespace beliefstate_client {
     return this->callService(desigRequest, nContextID);
   }
   
-  void BeliefstateClient::discreteEvent(std::string strEventName, int nToID, std::string strClassNamespace, std::string strClass, bool bSuccess, int nTimeStamp) {
+  void BeliefstateClient::discreteEvent(std::string strEventName, int nToID, std::string strClassNamespace, std::string strClass, bool bSuccess, int nTimeStamp, bool bIsRelativeContextID) {
     int nID = this->startContext(strEventName, nToID, strClassNamespace, strClass, nTimeStamp);
-    this->endContext(nID, bSuccess, nTimeStamp);
+    this->endContext(nID, bSuccess, nTimeStamp, bIsRelativeContextID);
   }
   
   void BeliefstateClient::addDesignator(CDesignator* cdAdd, std::string strAnnotation, int nToID) {

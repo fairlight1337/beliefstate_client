@@ -56,6 +56,6 @@ namespace beliefstate_client {
   }
   
   void Context::discreteEvent(std::string strEventName, std::string strClassNamespace, std::string strClass, bool bSuccess, int nTimeStamp) {
-    m_bsclClient->discreteEvent(strEventName, this->id(), strClassNamespace, strClass, bSuccess, nTimeStamp);
+    m_bsclClient->discreteEvent(strEventName, this->id(), strClassNamespace, strClass, bSuccess, nTimeStamp, true);
   }
 }
