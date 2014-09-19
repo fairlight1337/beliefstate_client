@@ -61,6 +61,7 @@ namespace beliefstate_client {
     void setID(int nContextID);
     
   public:
+    Context(BeliefstateClient* bsclClient, int nContextID);
     Context(BeliefstateClient* bsclClient, std::string strContextName, int nTimeStamp = -1);
     Context(BeliefstateClient* bsclClient, std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
     ~Context();
@@ -69,6 +70,7 @@ namespace beliefstate_client {
     
     void end(bool bSuccess = true, int nTimeStamp = -1);
     
+    Context* startContext(std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
     void annotateParameter(std::string strKey, std::string strValue);
     void annotateParameter(std::string strKey, float fValue);
     void addObject(Object* objAdd, std::string strProperty = "");

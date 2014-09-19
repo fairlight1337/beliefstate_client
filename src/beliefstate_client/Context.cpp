@@ -2,6 +2,12 @@
 
 
 namespace beliefstate_client {
+  Context::Context(BeliefstateClient* bsclClient, int nContextID) {
+    m_bsclClient = bsclClient;
+    
+    this->setID(nContextID);
+  }
+  
   Context::Context(BeliefstateClient* bsclClient, std::string strContextName, int nTimeStamp) {
     m_bsclClient = bsclClient;
     
@@ -18,7 +24,7 @@ namespace beliefstate_client {
   }
   
   void Context::end(bool bSuccess, int nTimeStamp) {
-    m_bsclClient->endContext(this->id(), bSuccess, nTimeStamp);
+    m_bsclClient->endContext(this->id(), bSuccess, nTimeStamp, true);
   }
   
   void Context::setID(int nContextID) {
@@ -27,6 +33,10 @@ namespace beliefstate_client {
   
   int Context::id() {
     return m_nContextID;
+  }
+  
+  Context* Context::startContext(std::string strContextName, std::string strClassNamespace, std::string strClass, int nTimeStamp) {
+    return new Context(m_bsclClient, m_bsclClient->startContext(strContextName, this->id(), strClassNamespace, strClass, nTimeStamp));
   }
   
   void Context::annotateParameter(std::string strKey, std::string strValue) {

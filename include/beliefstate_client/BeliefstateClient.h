@@ -103,7 +103,7 @@ namespace beliefstate_client {
     
     int startContext(std::string strContextName, int nRelativeToID = -1, int nTimeStamp = -1);
     int startContext(std::string strContextName, int nRelativeToID = -1, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
-    void endContext(int nID, bool bSuccess = true, int nTimeStamp = -1);
+    void endContext(int nID, bool bSuccess = true, int nTimeStamp = -1, bool bIsRelativeContextID = false);
     list<CDesignator*> alterContext(CDesignator* desigAlter, int nContextID = -1);
     
     void discreteEvent(std::string strEventName, int nToID = -1, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, int nTimeStamp = -1);

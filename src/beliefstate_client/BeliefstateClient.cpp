@@ -136,7 +136,7 @@ namespace beliefstate_client {
     return nID;
   }
 
-  void BeliefstateClient::endContext(int nID, bool bSuccess, int nTimeStamp) {
+  void BeliefstateClient::endContext(int nID, bool bSuccess, int nTimeStamp, bool bIsRelativeContextID) {
     CDesignator* desigRequest = new CDesignator();
     desigRequest->setType(ACTION);
     
@@ -149,7 +149,12 @@ namespace beliefstate_client {
       desigRequest->setValue("_time-end", nTimeStamp);
     }
     
-    list<CDesignator*> lstDesigs = this->callService(desigRequest);
+    list<CDesignator*> lstDesigs;
+    if(bIsRelativeContextID) {
+      lstDesigs = this->callService(desigRequest, nID);
+    } else {
+      lstDesigs = this->callService(desigRequest);
+    }
     
     for(CDesignator* cdDesig : lstDesigs) {
       delete cdDesig;
