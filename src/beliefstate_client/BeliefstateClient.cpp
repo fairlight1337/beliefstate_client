@@ -253,6 +253,19 @@ namespace beliefstate_client {
     delete desigRequest;
   }
   
+  void BeliefstateClient::registerOWLNamespace(std::string strShortcut, std::string strIRI) {
+    CDesignator* desigRequest = new CDesignator();
+    desigRequest->setType(ACTION);
+    
+    desigRequest->setValue(std::string("command"), "register-owl-namespace");
+    desigRequest->setValue(std::string("shortcut"), strShortcut);
+    desigRequest->setValue(std::string("iri"), strIRI);
+    
+    this->alterContext(desigRequest);
+    
+    delete desigRequest;
+  }
+  
   void BeliefstateClient::addObject(Object* objAdd, std::string strProperty, int nToID) {
     std::stringstream sts;
     long lAddress = (long)objAdd;

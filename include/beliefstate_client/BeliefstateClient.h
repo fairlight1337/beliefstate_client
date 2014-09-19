@@ -114,6 +114,7 @@ namespace beliefstate_client {
     void annotateParameter(std::string strKey, float fValue, int nToID = -1);
     
     void exportFiles(std::string strFilename);
+    void registerOWLNamespace(std::string strShortcut, std::string strIRI);
   };
 }
 
