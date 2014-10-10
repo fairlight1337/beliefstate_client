@@ -8,8 +8,7 @@ find_package(catkin REQUIRED COMPONENTS designator_integration designator_integr
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES beliefstate_client
-  CATKIN_DEPENDS designator_integration designator_integration_msgs roscpp roslib
-)
+  CATKIN_DEPENDS designator_integration designator_integration_msgs roscpp roslib)
 
 ###########
 ## Build ##
@@ -17,16 +16,20 @@ catkin_package(
 
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
-)
+  ${catkin_INCLUDE_DIRS})
 
-add_library(beliefstate_client
+add_library(${PROJECT_NAME}
   src/beliefstate_client/BeliefstateClient.cpp
   src/beliefstate_client/Object.cpp
-  src/beliefstate_client/Context.cpp
-)
+  src/beliefstate_client/Context.cpp)
 
-target_link_libraries(beliefstate_client
+target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
-  designator_integration
-)
+  designator_integration)
+
+add_executable(ex1
+  src/examples/ex1.cpp)
+
+target_link_libraries(ex1
+  ${catkin_LIBRARIES}
+  ${PROJECT_NAME})
