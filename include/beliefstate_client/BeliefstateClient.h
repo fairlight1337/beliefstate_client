@@ -101,12 +101,12 @@ namespace beliefstate_client {
     
     std::list<CDesignator*> callService(CDesignator* desigContent, int nRelativeContextID = -1);
     
-    int startContext(std::string strContextName, int nRelativeToID = -1, int nTimeStamp = -1);
-    int startContext(std::string strContextName, int nRelativeToID = -1, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
-    void endContext(int nID, bool bSuccess = true, int nTimeStamp = -1, bool bIsRelativeContextID = false);
+    int startContext(std::string strContextName, int nRelativeToID = -1, double dTimeStamp = -1);
+    int startContext(std::string strContextName, int nRelativeToID = -1, std::string strClassNamespace = "", std::string strClass = "", double dTimeStamp = -1);
+    void endContext(int nID, bool bSuccess = true, double dTimeStamp = -1, bool bIsRelativeContextID = false);
     list<CDesignator*> alterContext(CDesignator* desigAlter, int nContextID = -1);
     
-    void discreteEvent(std::string strEventName, int nToID = -1, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, int nTimeStamp = -1, bool bIsRelativeContextID = false);
+    void discreteEvent(std::string strEventName, int nToID = -1, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, double dTimeStamp = -1, bool bIsRelativeContextID = false);
     void addObject(Object* objAdd, std::string strProperty = "", int nToID = -1);
     
     void addDesignator(CDesignator* cdAdd, std::string strAnnotation = "", int nToID = -1);

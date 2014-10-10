@@ -95,11 +95,11 @@ namespace beliefstate_client {
     return m_strSource;
   }
   
-  int BeliefstateClient::startContext(std::string strContextName, int nRelativeToID, int nTimeStamp) {
-    return this->startContext(strContextName, nRelativeToID, "", "", nTimeStamp);
+  int BeliefstateClient::startContext(std::string strContextName, int nRelativeToID, double dTimeStamp) {
+    return this->startContext(strContextName, nRelativeToID, "", "", dTimeStamp);
   }
 
-  int BeliefstateClient::startContext(std::string strContextName, int nRelativeToID, std::string strClassNamespace, std::string strClass, int nTimeStamp) {
+  int BeliefstateClient::startContext(std::string strContextName, int nRelativeToID, std::string strClassNamespace, std::string strClass, double dTimeStamp) {
     CDesignator* desigRequest = new CDesignator();
     desigRequest->setType(ACTION);
     
@@ -116,8 +116,8 @@ namespace beliefstate_client {
       }
     }
     
-    if(nTimeStamp > -1) {
-      desigRequest->setValue("_time-start", nTimeStamp);
+    if(dTimeStamp > -1) {
+      desigRequest->setValue("_time-start", dTimeStamp);
     }
     
     std::list<CDesignator*> lstDesigs = this->callService(desigRequest, nRelativeToID);
@@ -136,7 +136,7 @@ namespace beliefstate_client {
     return nID;
   }
 
-  void BeliefstateClient::endContext(int nID, bool bSuccess, int nTimeStamp, bool bIsRelativeContextID) {
+  void BeliefstateClient::endContext(int nID, bool bSuccess, double dTimeStamp, bool bIsRelativeContextID) {
     CDesignator* desigRequest = new CDesignator();
     desigRequest->setType(ACTION);
     
@@ -145,8 +145,8 @@ namespace beliefstate_client {
     desigRequest->setValue(string("_success"), (bSuccess ? 1 : 0));
     desigRequest->setValue(string("_source"), m_strSource);
     
-    if(nTimeStamp > -1) {
-      desigRequest->setValue("_time-end", nTimeStamp);
+    if(dTimeStamp > -1) {
+      desigRequest->setValue("_time-end", dTimeStamp);
     }
     
     list<CDesignator*> lstDesigs;
@@ -171,9 +171,9 @@ namespace beliefstate_client {
     return this->callService(desigRequest, nContextID);
   }
   
-  void BeliefstateClient::discreteEvent(std::string strEventName, int nToID, std::string strClassNamespace, std::string strClass, bool bSuccess, int nTimeStamp, bool bIsRelativeContextID) {
-    int nID = this->startContext(strEventName, nToID, strClassNamespace, strClass, nTimeStamp);
-    this->endContext(nID, bSuccess, nTimeStamp, bIsRelativeContextID);
+  void BeliefstateClient::discreteEvent(std::string strEventName, int nToID, std::string strClassNamespace, std::string strClass, bool bSuccess, double dTimeStamp, bool bIsRelativeContextID) {
+    int nID = this->startContext(strEventName, nToID, strClassNamespace, strClass, dTimeStamp);
+    this->endContext(nID, bSuccess, dTimeStamp, bIsRelativeContextID);
   }
   
   void BeliefstateClient::addDesignator(CDesignator* cdAdd, std::string strAnnotation, int nToID) {

@@ -62,20 +62,20 @@ namespace beliefstate_client {
     
   public:
     Context(BeliefstateClient* bsclClient, int nContextID);
-    Context(BeliefstateClient* bsclClient, std::string strContextName, int nTimeStamp = -1);
-    Context(BeliefstateClient* bsclClient, std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
+    Context(BeliefstateClient* bsclClient, std::string strContextName, double dTimeStamp = -1);
+    Context(BeliefstateClient* bsclClient, std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", double dTimeStamp = -1);
     ~Context();
     
     int id();
     
-    void end(bool bSuccess = true, int nTimeStamp = -1);
+    void end(bool bSuccess = true, double dTimeStamp = -1);
     
-    Context* startContext(std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", int nTimeStamp = -1);
+    Context* startContext(std::string strContextName, std::string strClassNamespace = "", std::string strClass = "", double dTimeStamp = -1);
     void annotateParameter(std::string strKey, std::string strValue);
     void annotateParameter(std::string strKey, float fValue);
     void addObject(Object* objAdd, std::string strProperty = "");
     void addDesignator(CDesignator* cdAdd, std::string strAnnotation = "");
-    void discreteEvent(std::string strEventName, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, int nTimeStamp = -1);
+    void discreteEvent(std::string strEventName, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, double dTimeStamp = -1);
   };
 }
 

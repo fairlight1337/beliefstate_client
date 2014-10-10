@@ -8,23 +8,23 @@ namespace beliefstate_client {
     this->setID(nContextID);
   }
   
-  Context::Context(BeliefstateClient* bsclClient, std::string strContextName, int nTimeStamp) {
+  Context::Context(BeliefstateClient* bsclClient, std::string strContextName, double dTimeStamp) {
     m_bsclClient = bsclClient;
     
-    this->setID(bsclClient->startContext(strContextName, -1, nTimeStamp));
+    this->setID(bsclClient->startContext(strContextName, -1, dTimeStamp));
   }
   
-  Context::Context(BeliefstateClient* bsclClient, std::string strContextName, std::string strClassNamespace, std::string strClass, int nTimeStamp) {
+  Context::Context(BeliefstateClient* bsclClient, std::string strContextName, std::string strClassNamespace, std::string strClass, double dTimeStamp) {
     m_bsclClient = bsclClient;
     
-    this->setID(m_bsclClient->startContext(strContextName, -1, strClassNamespace, strClass, nTimeStamp));
+    this->setID(m_bsclClient->startContext(strContextName, -1, strClassNamespace, strClass, dTimeStamp));
   }
   
   Context::~Context() {
   }
   
-  void Context::end(bool bSuccess, int nTimeStamp) {
-    m_bsclClient->endContext(this->id(), bSuccess, nTimeStamp, true);
+  void Context::end(bool bSuccess, double dTimeStamp) {
+    m_bsclClient->endContext(this->id(), bSuccess, dTimeStamp, true);
   }
   
   void Context::setID(int nContextID) {
@@ -35,8 +35,8 @@ namespace beliefstate_client {
     return m_nContextID;
   }
   
-  Context* Context::startContext(std::string strContextName, std::string strClassNamespace, std::string strClass, int nTimeStamp) {
-    return new Context(m_bsclClient, m_bsclClient->startContext(strContextName, this->id(), strClassNamespace, strClass, nTimeStamp));
+  Context* Context::startContext(std::string strContextName, std::string strClassNamespace, std::string strClass, double dTimeStamp) {
+    return new Context(m_bsclClient, m_bsclClient->startContext(strContextName, this->id(), strClassNamespace, strClass, dTimeStamp));
   }
   
   void Context::annotateParameter(std::string strKey, std::string strValue) {
@@ -55,7 +55,7 @@ namespace beliefstate_client {
     m_bsclClient->addDesignator(cdAdd, strAnnotation, this->id());
   }
   
-  void Context::discreteEvent(std::string strEventName, std::string strClassNamespace, std::string strClass, bool bSuccess, int nTimeStamp) {
-    m_bsclClient->discreteEvent(strEventName, this->id(), strClassNamespace, strClass, bSuccess, nTimeStamp, true);
+  void Context::discreteEvent(std::string strEventName, std::string strClassNamespace, std::string strClass, bool bSuccess, double dTimeStamp) {
+    m_bsclClient->discreteEvent(strEventName, this->id(), strClassNamespace, strClass, bSuccess, dTimeStamp, true);
   }
 }
