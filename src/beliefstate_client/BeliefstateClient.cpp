@@ -69,18 +69,18 @@ namespace beliefstate_client {
     m_sclService = m_nhHandle->serviceClient<designator_integration_msgs::DesignatorCommunication>(m_strServer + "/operate");
   }
   
-  std::list<CDesignator*> BeliefstateClient::callService(CDesignator* desigContent, int nRelativeContextID) {
+  std::list<designator_integration::Designator*> BeliefstateClient::callService(designator_integration::Designator* desigContent, int nRelativeContextID) {
     if(nRelativeContextID > -1) {
-      desigContent->setValue(string("_relative_context_id"), nRelativeContextID);
+      desigContent->setValue(std::string("_relative_context_id"), nRelativeContextID);
     }
     
     designator_integration_msgs::DesignatorCommunication dcComm;
     dcComm.request.request.designator = desigContent->serializeToMessage();
     
-    std::list<CDesignator*> lstReturnDesigs;
+    std::list<designator_integration::Designator*> lstReturnDesigs;
     if(m_sclService.call(dcComm)) {
       for(designator_integration_msgs::Designator msgDesig : dcComm.response.response.designators) {
-	lstReturnDesigs.push_back(new CDesignator(msgDesig));
+	lstReturnDesigs.push_back(new designator_integration::Designator(msgDesig));
       }
     }
     
@@ -100,19 +100,19 @@ namespace beliefstate_client {
   }
 
   int BeliefstateClient::startContext(std::string strContextName, int nRelativeToID, std::string strClassNamespace, std::string strClass, double dTimeStamp) {
-    CDesignator* desigRequest = new CDesignator();
-    desigRequest->setType(ACTION);
+    designator_integration::Designator* desigRequest = new designator_integration::Designator();
+    desigRequest->setType(designator_integration::Designator::DesignatorType::ACTION);
     
-    desigRequest->setValue(string("_cb_type"), "begin");
-    desigRequest->setValue(string("_name"), strContextName);
-    desigRequest->setValue(string("_source"), m_strSource);
-    desigRequest->setValue(string("_detail-level"), 1);
+    desigRequest->setValue(std::string("_cb_type"), "begin");
+    desigRequest->setValue(std::string("_name"), strContextName);
+    desigRequest->setValue(std::string("_source"), m_strSource);
+    desigRequest->setValue(std::string("_detail-level"), 1);
     
     if(strClass != "") {
-      desigRequest->setValue(string("_class"), strClass);
+      desigRequest->setValue(std::string("_class"), strClass);
     
       if(strClassNamespace != "") {
-	desigRequest->setValue(string("_classnamespace"), strClassNamespace);
+	desigRequest->setValue(std::string("_classnamespace"), strClassNamespace);
       }
     }
     
@@ -120,16 +120,16 @@ namespace beliefstate_client {
       desigRequest->setValue("_time-start", dTimeStamp);
     }
     
-    std::list<CDesignator*> lstDesigs = this->callService(desigRequest, nRelativeToID);
+    std::list<designator_integration::Designator*> lstDesigs = this->callService(desigRequest, nRelativeToID);
     delete desigRequest;
     
     int nID = -1;
     if(lstDesigs.size() == 1) {
-      CDesignator* desigResponse = lstDesigs.front();
+      designator_integration::Designator* desigResponse = lstDesigs.front();
       nID = (int)desigResponse->floatValue("_id");
     }
     
-    for(CDesignator* cdDesig : lstDesigs) {
+    for(designator_integration::Designator* cdDesig : lstDesigs) {
       delete cdDesig;
     }
     
@@ -137,36 +137,36 @@ namespace beliefstate_client {
   }
 
   void BeliefstateClient::endContext(int nID, bool bSuccess, double dTimeStamp, bool bIsRelativeContextID) {
-    CDesignator* desigRequest = new CDesignator();
-    desigRequest->setType(ACTION);
+    designator_integration::Designator* desigRequest = new designator_integration::Designator();
+    desigRequest->setType(designator_integration::Designator::DesignatorType::ACTION);
     
-    desigRequest->setValue(string("_cb_type"), "end");
-    desigRequest->setValue(string("_id"), nID);
-    desigRequest->setValue(string("_success"), (bSuccess ? 1 : 0));
-    desigRequest->setValue(string("_source"), m_strSource);
+    desigRequest->setValue(std::string("_cb_type"), "end");
+    desigRequest->setValue(std::string("_id"), nID);
+    desigRequest->setValue(std::string("_success"), (bSuccess ? 1 : 0));
+    desigRequest->setValue(std::string("_source"), m_strSource);
     
     if(dTimeStamp > -1) {
       desigRequest->setValue("_time-end", dTimeStamp);
     }
     
-    list<CDesignator*> lstDesigs;
+    std::list<designator_integration::Designator*> lstDesigs;
     if(bIsRelativeContextID) {
       lstDesigs = this->callService(desigRequest, nID);
     } else {
       lstDesigs = this->callService(desigRequest);
     }
     
-    for(CDesignator* cdDesig : lstDesigs) {
+    for(designator_integration::Designator* cdDesig : lstDesigs) {
       delete cdDesig;
     }
     
     delete desigRequest;
   }
 
-  std::list<CDesignator*> BeliefstateClient::alterContext(CDesignator* desigRequest, int nContextID) {
-    desigRequest->setValue(string("_cb_type"), "alter");
-    desigRequest->setValue(string("_type"), "alter");
-    desigRequest->setValue(string("_source"), m_strSource);
+  std::list<designator_integration::Designator*> BeliefstateClient::alterContext(designator_integration::Designator* desigRequest, int nContextID) {
+    desigRequest->setValue(std::string("_cb_type"), "alter");
+    desigRequest->setValue(std::string("_type"), "alter");
+    desigRequest->setValue(std::string("_source"), m_strSource);
     
     return this->callService(desigRequest, nContextID);
   }
@@ -176,20 +176,20 @@ namespace beliefstate_client {
     this->endContext(nID, bSuccess, dTimeStamp, bIsRelativeContextID);
   }
   
-  void BeliefstateClient::addDesignator(CDesignator* cdAdd, std::string strAnnotation, int nToID) {
+  void BeliefstateClient::addDesignator(designator_integration::Designator* cdAdd, std::string strAnnotation, int nToID) {
     std::string strDesigType = "";
     
     switch(cdAdd->type()) {
-    case OBJECT: {
+    case designator_integration::Designator::DesignatorType::OBJECT: {
       strDesigType = "OBJECT";
     } break;
     
-    case LOCATION: {
+    case designator_integration::Designator::DesignatorType::LOCATION: {
       strDesigType = "LOCATION";
     } break;
     
     default:
-    case ACTION: {
+    case designator_integration::Designator::DesignatorType::ACTION: {
       strDesigType = "ACTION";
     } break;
     }
@@ -198,16 +198,16 @@ namespace beliefstate_client {
     long lAddress = (long)cdAdd;
     sts << lAddress;
   
-    CDesignator* cdSend = new CDesignator(ACTION);
-    cdSend->addChild("description", LIST, cdAdd->children());
+    designator_integration::Designator* cdSend = new designator_integration::Designator(designator_integration::Designator::DesignatorType::ACTION);
+    cdSend->addChild("description", designator_integration::KeyValuePair::ValueType::LIST, cdAdd->children());
     cdSend->setValue("command", "add-designator");
     cdSend->setValue("type", strDesigType);
     cdSend->setValue("annotation", strAnnotation);
     cdSend->setValue("memory-address", sts.str());
     
-    std::list<CDesignator*> lstResultDesignators = this->alterContext(cdSend, nToID);
+    std::list<designator_integration::Designator*> lstResultDesignators = this->alterContext(cdSend, nToID);
     
-    for(CDesignator* cdDelete : lstResultDesignators) {
+    for(designator_integration::Designator* cdDelete : lstResultDesignators) {
       delete cdDelete;
     }
     
@@ -215,7 +215,7 @@ namespace beliefstate_client {
   }
   
   void BeliefstateClient::annotateParameter(std::string strKey, std::string strValue, int nToID) {
-    CDesignator* cdAnnotate = new CDesignator(OBJECT);
+    designator_integration::Designator* cdAnnotate = new designator_integration::Designator(designator_integration::Designator::DesignatorType::OBJECT);
     cdAnnotate->setValue(strKey, strValue);
     
     this->addDesignator(cdAnnotate, "parameter-annotation", nToID);
@@ -224,17 +224,17 @@ namespace beliefstate_client {
   }
 
   void BeliefstateClient::annotateParameter(std::string strKey, float fValue, int nToID) {
-    CDesignator* cdAnnotate = new CDesignator(OBJECT);
+    designator_integration::Designator* cdAnnotate = new designator_integration::Designator(designator_integration::Designator::DesignatorType::OBJECT);
     cdAnnotate->setValue(strKey, fValue);
-  
+    
     this->addDesignator(cdAnnotate, "parameter-annotation", nToID);
-  
+    
     delete cdAnnotate;
   }
   
   void BeliefstateClient::exportFiles(std::string strFilename) {
-    CDesignator* desigRequest = new CDesignator();
-    desigRequest->setType(ACTION);
+    designator_integration::Designator* desigRequest = new designator_integration::Designator();
+    desigRequest->setType(designator_integration::Designator::DesignatorType::ACTION);
     
     desigRequest->setValue(std::string("command"), "export-planlog");
     desigRequest->setValue(std::string("format"), "owl");
@@ -254,8 +254,8 @@ namespace beliefstate_client {
   }
   
   void BeliefstateClient::registerOWLNamespace(std::string strShortcut, std::string strIRI) {
-    CDesignator* desigRequest = new CDesignator();
-    desigRequest->setType(ACTION);
+    designator_integration::Designator* desigRequest = new designator_integration::Designator();
+    desigRequest->setType(designator_integration::Designator::DesignatorType::ACTION);
     
     desigRequest->setValue(std::string("command"), "register-owl-namespace");
     desigRequest->setValue(std::string("shortcut"), strShortcut);
@@ -271,8 +271,8 @@ namespace beliefstate_client {
     long lAddress = (long)objAdd;
     sts << lAddress;
     
-    CDesignator* cdSend = new CDesignator(ACTION);
-    cdSend->addChild("description", LIST, objAdd->children());
+    designator_integration::Designator* cdSend = new designator_integration::Designator(designator_integration::Designator::DesignatorType::ACTION);
+    cdSend->addChild("description", designator_integration::KeyValuePair::ValueType::LIST, objAdd->children());
     cdSend->setValue("command", "add-object");
     cdSend->setValue("type", "OBJECT");
     cdSend->setValue("memory-address", sts.str());
@@ -289,9 +289,9 @@ namespace beliefstate_client {
       cdSend->setValue("classnamespace", objAdd->classNamespace());
     }
     
-    std::list<CDesignator*> lstResultDesignators = this->alterContext(cdSend, nToID);
+    std::list<designator_integration::Designator*> lstResultDesignators = this->alterContext(cdSend, nToID);
     
-    for(CDesignator* cdDelete : lstResultDesignators) {
+    for(designator_integration::Designator* cdDelete : lstResultDesignators) {
       delete cdDelete;
     }
     

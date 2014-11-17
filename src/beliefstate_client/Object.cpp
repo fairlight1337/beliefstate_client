@@ -2,7 +2,7 @@
 
 
 namespace beliefstate_client {
-  Object::Object(std::string strNamespace, std::string strClass) : CDesignator(OBJECT) {
+  Object::Object(std::string strNamespace, std::string strClass) : designator_integration::Designator(designator_integration::Designator::DesignatorType::OBJECT) {
     m_strNamespace = strNamespace;
     m_strClass = strClass;
   }

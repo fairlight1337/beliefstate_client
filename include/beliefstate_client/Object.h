@@ -45,11 +45,11 @@
 #include <string>
 
 // Designators
-#include <designators/CDesignator.h>
+#include <designators/Designator.h>
 
 
 namespace beliefstate_client {
-  class Object : public CDesignator {
+  class Object : public designator_integration::Designator {
   private:
     std::string m_strNamespace;
     std::string m_strClass;

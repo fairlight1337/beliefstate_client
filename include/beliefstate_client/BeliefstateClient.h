@@ -49,7 +49,7 @@
 #include <ros/ros.h>
 
 // Designators
-#include <designators/CDesignator.h>
+#include <designators/Designator.h>
 #include <designator_integration_msgs/DesignatorCommunication.h>
 
 // Private
@@ -99,17 +99,17 @@ namespace beliefstate_client {
     void setSource(std::string strSource);
     std::string source();
     
-    std::list<CDesignator*> callService(CDesignator* desigContent, int nRelativeContextID = -1);
+    std::list<designator_integration::Designator*> callService(designator_integration::Designator* desigContent, int nRelativeContextID = -1);
     
     int startContext(std::string strContextName, int nRelativeToID = -1, double dTimeStamp = -1);
     int startContext(std::string strContextName, int nRelativeToID = -1, std::string strClassNamespace = "", std::string strClass = "", double dTimeStamp = -1);
     void endContext(int nID, bool bSuccess = true, double dTimeStamp = -1, bool bIsRelativeContextID = false);
-    list<CDesignator*> alterContext(CDesignator* desigAlter, int nContextID = -1);
+    std::list<designator_integration::Designator*> alterContext(designator_integration::Designator* desigAlter, int nContextID = -1);
     
     void discreteEvent(std::string strEventName, int nToID = -1, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, double dTimeStamp = -1, bool bIsRelativeContextID = false);
     void addObject(Object* objAdd, std::string strProperty = "", int nToID = -1);
     
-    void addDesignator(CDesignator* cdAdd, std::string strAnnotation = "", int nToID = -1);
+    void addDesignator(designator_integration::Designator* cdAdd, std::string strAnnotation = "", int nToID = -1);
     void annotateParameter(std::string strKey, std::string strValue, int nToID = -1);
     void annotateParameter(std::string strKey, float fValue, int nToID = -1);
     

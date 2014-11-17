@@ -51,7 +51,7 @@ namespace beliefstate_client {
     m_bsclClient->addObject(objAdd, strProperty, this->id());
   }
   
-  void Context::addDesignator(CDesignator* cdAdd, std::string strAnnotation) {
+  void Context::addDesignator(designator_integration::Designator* cdAdd, std::string strAnnotation) {
     m_bsclClient->addDesignator(cdAdd, strAnnotation, this->id());
   }
   

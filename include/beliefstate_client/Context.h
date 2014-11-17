@@ -45,14 +45,14 @@
 #include <string>
 
 // Designators
-#include <designators/CDesignator.h>
+#include <designators/Designator.h>
 
 // Private
 #include <beliefstate_client/BeliefstateClient.h>
 
 
 namespace beliefstate_client {
-  class Context : public CDesignator {
+  class Context : public designator_integration::Designator {
   private:
     int m_nContextID;
     BeliefstateClient* m_bsclClient;
@@ -74,7 +74,7 @@ namespace beliefstate_client {
     void annotateParameter(std::string strKey, std::string strValue);
     void annotateParameter(std::string strKey, float fValue);
     void addObject(Object* objAdd, std::string strProperty = "");
-    void addDesignator(CDesignator* cdAdd, std::string strAnnotation = "");
+    void addDesignator(designator_integration::Designator* cdAdd, std::string strAnnotation = "");
     void discreteEvent(std::string strEventName, std::string strClassNamespace = "", std::string strClass = "", bool bSuccess = true, double dTimeStamp = -1);
   };
 }
