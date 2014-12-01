@@ -115,6 +115,8 @@ namespace beliefstate_client {
     
     void exportFiles(std::string strFilename);
     void registerOWLNamespace(std::string strShortcut, std::string strIRI);
+    
+    void setMetaDataField(std::string strField, std::string strValue);
   };
 }
 

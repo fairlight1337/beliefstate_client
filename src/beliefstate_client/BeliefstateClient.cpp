@@ -297,4 +297,19 @@ namespace beliefstate_client {
     
     delete cdSend;
   }
+  
+  void BeliefstateClient::setMetaDataField(std::string strField, std::string strValue) {
+    designator_integration::Designator* cdSend = new designator_integration::Designator(designator_integration::Designator::DesignatorType::ACTION);
+    cdSend->setValue("command", "set-experiment-meta-data");
+    cdSend->setValue("field", strField);
+    cdSend->setValue("value", strValue);
+    
+    std::list<designator_integration::Designator*> lstResultDesignators = this->alterContext(cdSend);
+    
+    for(designator_integration::Designator* cdDelete : lstResultDesignators) {
+      delete cdDelete;
+    }
+    
+    delete cdSend;
+  }
 }

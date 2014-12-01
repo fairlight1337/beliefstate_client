@@ -12,6 +12,8 @@ int main(int argc, char** argv) {
   ros::init(argc, argv, "bs_client");
   BeliefstateClient* bscl = new BeliefstateClient("bs_client");
   
+  bscl->setMetaDataField("experiment", "ex1");
+  
   bscl->registerOWLNamespace("sim", "http://some-namespace.org/#");
   
   Context* ctxMain = new Context(bscl, "MainTimeline", "&sim;", "MainTimeline", 0);
