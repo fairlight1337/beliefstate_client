@@ -117,6 +117,9 @@ namespace beliefstate_client {
     void registerOWLNamespace(std::string strShortcut, std::string strIRI);
     
     void setMetaDataField(std::string strField, std::string strValue);
+    void startNewExperiment();
+    
+    void sendDesignator(designator_integration::Designator* cdSend, bool bDelete = true);
   };
 }
 
