@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
   
   bscl->exportFiles("test");
   
-  bscl->startNewExperiment();
+  //bscl->startNewExperiment();
   
   delete bscl;
   
