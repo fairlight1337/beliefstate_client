@@ -54,7 +54,7 @@ namespace beliefstate_client {
 
   void BeliefstateClient::init(int argc, char** argv, std::string strSource, std::string strServer) {
     if(strServer == "") {
-      strServer = "/beliefstate_ros";
+      strServer = "/semrec_ros";
     }
     
     m_strServer = strServer;
