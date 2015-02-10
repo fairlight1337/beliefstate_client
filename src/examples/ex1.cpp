@@ -14,6 +14,7 @@ int main(int argc, char** argv) {
   
   bscl->setMetaDataField("experiment", "ex1");
   
+  bscl->startNewExperiment();
   bscl->registerOWLNamespace("sim", "http://some-namespace.org/#");
   
   Context* ctxMain = new Context(bscl, "MainTimeline", "&sim;", "MainTimeline", 0);
@@ -55,8 +56,6 @@ int main(int argc, char** argv) {
   delete ctxLiftHand;
   
   bscl->exportFiles("test");
-  
-  //bscl->startNewExperiment();
   
   delete bscl;
   

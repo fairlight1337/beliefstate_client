@@ -3,12 +3,12 @@ project(beliefstate_client)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
-find_package(catkin REQUIRED COMPONENTS designator_integration designator_integration_msgs roscpp roslib)
+find_package(catkin REQUIRED COMPONENTS designator_integration_cpp designator_integration_msgs roscpp roslib)
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES beliefstate_client
-  CATKIN_DEPENDS designator_integration designator_integration_msgs roscpp roslib)
+  CATKIN_DEPENDS designator_integration_cpp designator_integration_msgs roscpp roslib)
 
 ###########
 ## Build ##
@@ -30,6 +30,13 @@ target_link_libraries(${PROJECT_NAME}
 add_executable(ex1
   src/examples/ex1.cpp)
 
+add_executable(ex_repeat_offset
+  src/examples/ex_repeat_offset.cpp)
+
 target_link_libraries(ex1
+  ${catkin_LIBRARIES}
+  ${PROJECT_NAME})
+
+target_link_libraries(ex_repeat_offset
   ${catkin_LIBRARIES}
   ${PROJECT_NAME})
